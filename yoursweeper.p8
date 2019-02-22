@@ -201,13 +201,13 @@ function open_tile()
  
 end
 
-function reset_player()
+function reset_player(score)
  local limits = scenery.box
  
  player = {
   x=0,
   y=0,
-  score=0,
+  score=score or 0,
   health=1,
   speed=1,
   is_moving=false,
@@ -336,11 +336,11 @@ end
 
 -- game cycles
 
-function reset_game()
+function reset_game(score)
  generate_flag(nrows, ncols)
  generate_tiles(nrows, ncols)
  
- reset_player()
+ reset_player(score)
  game.state = game_state_running
 end
 
@@ -369,6 +369,8 @@ function _update()
  
  if state == game_state_running then
  	update_game()
+ elseif state == game_state_won then
+  reset_game(player.score)
  elseif btn(❎) then
   reset_game()
  end
@@ -491,12 +493,12 @@ end
 function _draw()
  local state = game.state
  
- if state == game_state_running then
-  draw_game()
+ if state == game_state_starting then
+  draw_intro()
  elseif state == game_state_over then
   draw_game_over()
  else
-  draw_intro()
+  draw_game()
  end
 end
 
